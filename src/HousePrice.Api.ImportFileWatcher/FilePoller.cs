@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Timers;
 using JetBrains.Annotations;
 using Serilog;
 
@@ -29,7 +28,7 @@ namespace HousePrice.Api.ImportFileWatcher
             _onFileDelete = onFileDelete;
             _onSuccess = onSuccess;
             _onError = onError;
-            
+
             if (!Directory.Exists(_watchPath))
             {
                 Log.Warning($"Can't find directory {_watchPath}");
@@ -40,37 +39,37 @@ namespace HousePrice.Api.ImportFileWatcher
                 .Select(f => new FileInfo(f))
                 .ToDictionary(k => k.FullName);
 
-           
+
         }
 
         private DateTime _lastSnapShot = DateTime.MinValue;
-        
+
         private Dictionary<string, FileInfo> _lastState = new Dictionary<string, FileInfo>();
 
         public void CheckModifications()
         {
-				Log.Information($"Logging timer activated for {_watchPath}");
+                Log.Information($"Logging timer activated for {_watchPath}");
                 var currentFiles = Directory.GetFiles(_watchPath)
                     .Select(f => new FileInfo(f))
                     .ToDictionary(k => k.FullName);
 
-				StringBuilder laststatemessage = new StringBuilder();
+                StringBuilder laststatemessage = new StringBuilder();
 
-	            foreach (var file in _lastState)
-	            {
+                foreach (var file in _lastState)
+                {
 
-		            laststatemessage.AppendLine(file.Value.FullName);
+                    laststatemessage.AppendLine(file.Value.FullName);
 
-	            }
-	            StringBuilder currentstatemessage = new StringBuilder();
-	            foreach (var file in currentFiles)
-	            {
-		            currentstatemessage.AppendLine(file.Value.FullName);
-	            }
+                }
+                StringBuilder currentstatemessage = new StringBuilder();
+                foreach (var file in currentFiles)
+                {
+                    currentstatemessage.AppendLine(file.Value.FullName);
+                }
 
-				Log.Information($"Last state:\r\n{laststatemessage.ToString()} /r/nCurrent State:/r/n{currentstatemessage.ToString()}");
+                Log.Information($"Last state:\r\n{laststatemessage.ToString()} /r/nCurrent State:/r/n{currentstatemessage.ToString()}");
 
-	            foreach (var watchedFileInfo in currentFiles.Values)
+                foreach (var watchedFileInfo in currentFiles.Values)
                 {
                     Log.Information($"Processing dropped file {watchedFileInfo.Name}");
 
