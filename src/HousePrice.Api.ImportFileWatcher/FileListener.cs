@@ -9,7 +9,7 @@ using Serilog;
 
 namespace HousePrice.Api.ImportFileWatcher
 {
-    public class FilePoller
+    public class FileListener
     {
         [NotNull] private readonly string _watchPath;
         private readonly Action<FileInfo> _onFileCreate;
@@ -18,7 +18,7 @@ namespace HousePrice.Api.ImportFileWatcher
         private readonly Action<FileInfo> _onSuccess;
         private readonly Action<string, Exception> _onError;
 
-        public FilePoller([NotNull] string watchPath, Action<FileInfo> onFileCreate = null,
+        public FileListener([NotNull] string watchPath, Action<FileInfo> onFileCreate = null,
             Action<FileInfo> onFileModify = null,
             Action<FileInfo> onFileDelete = null, Action<FileInfo> onSuccess = null,
             Action<string, Exception> onError = null)
@@ -49,28 +49,28 @@ namespace HousePrice.Api.ImportFileWatcher
 
         public void CheckModifications()
         {
-				Log.Information($"Logging timer activated for {_watchPath}");
+                Log.Information($"Logging timer activated for {_watchPath}");
                 var currentFiles = Directory.GetFiles(_watchPath)
                     .Select(f => new FileInfo(f))
                     .ToDictionary(k => k.FullName);
 
-				StringBuilder laststatemessage = new StringBuilder();
+                StringBuilder laststatemessage = new StringBuilder();
 
-	            foreach (var file in _lastState)
-	            {
+                foreach (var file in _lastState)
+                {
 
-		            laststatemessage.AppendLine(file.Value.FullName);
+                    laststatemessage.AppendLine(file.Value.FullName);
 
-	            }
-	            StringBuilder currentstatemessage = new StringBuilder();
-	            foreach (var file in currentFiles)
-	            {
-		            currentstatemessage.AppendLine(file.Value.FullName);
-	            }
+                }
+                StringBuilder currentstatemessage = new StringBuilder();
+                foreach (var file in currentFiles)
+                {
+                    currentstatemessage.AppendLine(file.Value.FullName);
+                }
 
-				Log.Information($"Last state:\r\n{laststatemessage.ToString()} /r/nCurrent State:/r/n{currentstatemessage.ToString()}");
+                Log.Information($"Last state:\r\n{laststatemessage.ToString()} /r/nCurrent State:/r/n{currentstatemessage.ToString()}");
 
-	            foreach (var watchedFileInfo in currentFiles.Values)
+                foreach (var watchedFileInfo in currentFiles.Values)
                 {
                     Log.Information($"Processing dropped file {watchedFileInfo.Name}");
 
