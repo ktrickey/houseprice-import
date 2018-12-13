@@ -8,7 +8,7 @@ using Serilog;
 
 namespace HousePrice.Api.ImportFileWatcher
 {
-    public class FilePoller
+    public class FileListener
     {
         [NotNull] private readonly string _watchPath;
         private readonly Action<FileInfo> _onFileCreate;
@@ -17,7 +17,7 @@ namespace HousePrice.Api.ImportFileWatcher
         private readonly Action<FileInfo> _onSuccess;
         private readonly Action<string, Exception> _onError;
 
-        public FilePoller([NotNull] string watchPath, Action<FileInfo> onFileCreate = null,
+        public FileListener([NotNull] string watchPath, Action<FileInfo> onFileCreate = null,
             Action<FileInfo> onFileModify = null,
             Action<FileInfo> onFileDelete = null, Action<FileInfo> onSuccess = null,
             Action<string, Exception> onError = null)
