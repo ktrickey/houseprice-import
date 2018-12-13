@@ -19,18 +19,10 @@ namespace HousePrice.Api.ImportFileWatcher
     static class Program
     {
         private static readonly ManualResetEvent ResetEvent = new ManualResetEvent(false);
-
-<<<<<<< HEAD
-        static FilePoller GetPoller(string watchDirectory, string processingDirectory, string successDirectory,
-            RestClient client)
-        {
-            return new FilePoller(watchDirectory, async (f) =>
-=======
         static FileListener GetPoller(string watchDirectory, string processingDirectory, string successDirectory,
             RestClient client)
         {
             return new FileListener(watchDirectory, async (f) =>
->>>>>>> master
             {
                 Log.Information($"Processing {f.FullName}");
                 var filename = $"{f.Name}-{Guid.NewGuid().ToString()}";
