@@ -19,7 +19,7 @@ namespace HousePrice.Api.ImportFileWatcher
     static class Program
     {
         private static readonly ManualResetEvent ResetEvent = new ManualResetEvent(false);
-        static FileListener GetPoller(string watchDirectory, string processingDirectory, string successDirectory,
+        static FileListener GetListener(string watchDirectory, string processingDirectory, string successDirectory,
             RestClient client)
         {
             return new FileListener(watchDirectory, async (f) =>
@@ -88,7 +88,7 @@ namespace HousePrice.Api.ImportFileWatcher
             var watchDirectory = configuration["watchDirectory"];
             var successDirectory = configuration["successDirectory"];
             var processingDirectory = configuration["processingDirectory"];
-            var poller = GetPoller(watchDirectory, processingDirectory, successDirectory, client);
+            var poller = GetListener(watchDirectory, processingDirectory, successDirectory, client);
 
             // Configure the scheduled tasks....
             host.Services.UseScheduler(scheduler =>
