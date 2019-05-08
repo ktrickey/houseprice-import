@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Coravel;
@@ -36,14 +38,26 @@ namespace HousePrice.Api.ImportFileWatcher
                     {
                         using (var csvReader = new CsvReader(streamReader))
                         {
+                            await csvReader.ReadAsync();
                             csvReader.Configuration.HasHeaderRecord = false;
                             csvReader.Configuration.RegisterClassMap<HousePriceMap>();
+                            var count = 0;
+                            var batch = new List<HousePrice>();
                             while (await csvReader.ReadAsync())
                             {
                                 var data = csvReader.GetRecord<HousePrice>();
-                                Log.Debug(JsonConvert.SerializeObject(data));
+                                //Log.Debug(JsonConvert.SerializeObject(data));
 
-                                await AddRecord(f, data, client);
+                                //await AddRecord(f, data, client);
+                                batch.Add(data);
+                                count++;
+                                if (count % 100 == 0)
+                                {
+                                    await AddRecords(f, batch, client);
+                                    Log.Debug($"{count}");
+
+                                    batch.Clear();
+                                }
                             }
                         }
                     }
@@ -113,6 +127,21 @@ namespace HousePrice.Api.ImportFileWatcher
             var req = new RestRequest($"api/transaction");
 
             req.AddParameter("application/json", JsonConvert.SerializeObject(record), ParameterType.RequestBody);
+            req.RequestFormat = DataFormat.Json;
+            Log.Information("Calling transaction import");
+            var result = await client.ExecutePostTaskAsync(req);
+            if (!result.IsSuccessful)
+            {
+                Log.Error(
+                    $"post failed, status: {result.StatusCode}, message:{result.ErrorMessage}, content: {result.Content}");
+            }
+        }
+
+        private static async Task AddRecords(FileInfo f, IEnumerable<HousePrice> records, RestClient client)
+        {
+            var req = new RestRequest($"api/transaction");
+
+            req.AddParameter("application/json", JsonConvert.SerializeObject(records.ToArray()), ParameterType.RequestBody);
             req.RequestFormat = DataFormat.Json;
             Log.Information("Calling transaction import");
             var result = await client.ExecutePostTaskAsync(req);

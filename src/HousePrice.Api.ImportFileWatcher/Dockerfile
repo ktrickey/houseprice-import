@@ -1,7 +1,7 @@
-FROM microsoft/dotnet:2.1-aspnetcore-runtime-alpine AS base
+FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine AS base
 WORKDIR /app
 
-FROM microsoft/dotnet:2.1-sdk-alpine AS build
+FROM microsoft/dotnet:2.2-sdk-alpine AS build
 WORKDIR /src
 COPY ["HousePrice.Api.ImportFileWatcher/HousePrice.Api.ImportFileWatcher.csproj", "HousePrice.Api.ImportFileWatcher/"]
 RUN dotnet restore  "HousePrice.Api.ImportFileWatcher/HousePrice.Api.ImportFileWatcher.csproj"

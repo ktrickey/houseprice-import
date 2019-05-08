@@ -9,7 +9,7 @@ namespace HousePrice.Api.ImportFileWatcher
         {
             Map( m => m.TransactionId ).Index(0);
             Map( m => m.Price ).Index(1);
-            Map( m => m.TransferDate ).Index(2).TypeConverterOption.Format("yyyy-MM-dd hh:mm:ss");
+            Map( m => m.TransferDate ).Index(2).TypeConverterOption.Format("yyyy-MM-dd hh:mm");
             Map( m => m.Postcode ).Index(3);
             Map( m => m.PropertyType ).Index(4);
             Map( m => m.IsNew ).Index(5);
